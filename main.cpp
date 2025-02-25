@@ -36,16 +36,33 @@ int main(int argc, char* argv[]) {
 
     IntersectionManager manager(WINDOW_WIDTH, WINDOW_HEIGHT);
 
+    float centerX = WINDOW_WIDTH  * 0.5f;
+    float centerY = WINDOW_HEIGHT * 0.5f;
+    float laneOffset = 20.0f;
+
     manager.addCar(std::make_unique<Car>(
-        WINDOW_WIDTH / 2 - 10, -40.0f, 20, 40, 0.0f, 2.0f, SDL_Color{255, 0, 0, 255}));
+        centerX - laneOffset, -40.0f,
+        20, 40,
+        0.0f, 2.0f,
+        SDL_Color{255, 0, 0, 255})); // едет сверху вниз, сдвигаем левее
+
     manager.addCar(std::make_unique<Car>(
-        WINDOW_WIDTH / 2 - 10, static_cast<float>(WINDOW_HEIGHT),
-        20, 40, 0.0f, -2.0f, SDL_Color{0, 255, 0, 255}));
+        centerX + laneOffset, static_cast<float>(WINDOW_HEIGHT),
+        20, 40,
+        0.0f, -2.0f,
+        SDL_Color{0, 255, 0, 255})); // едет снизу вверх, сдвигаем правее
+
     manager.addCar(std::make_unique<Car>(
-        -40.0f, WINDOW_HEIGHT / 2 - 10, 40, 20, 3.0f, 0.0f, SDL_Color{0, 0, 255, 255}));
+        -40.0f, centerY + laneOffset,
+        40, 20,
+        3.0f, 0.0f,
+        SDL_Color{0, 0, 255, 255})); // едет слева направо, сдвигаем вниз
+
     manager.addCar(std::make_unique<Car>(
-        static_cast<float>(WINDOW_WIDTH), WINDOW_HEIGHT / 2 - 10,
-        40, 20, -2.0f, 0.0f, SDL_Color{255, 255, 0, 255}));
+        static_cast<float>(WINDOW_WIDTH), centerY - laneOffset,
+        40, 20,
+        -2.0f, 0.0f,
+        SDL_Color{255, 255, 0, 255})); // едет справа налево, сдвигаем вверх
 
     manager.run();
 
@@ -62,8 +79,8 @@ int main(int argc, char* argv[]) {
 
         int regionHalf = 50;
         SDL_Rect regionRect = {
-            WINDOW_WIDTH / 2 - regionHalf,
-            WINDOW_HEIGHT / 2 - regionHalf,
+            static_cast<int>(centerX - regionHalf),
+            static_cast<int>(centerY - regionHalf),
             regionHalf * 2,
             regionHalf * 2
         };

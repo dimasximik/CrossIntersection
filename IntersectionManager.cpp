@@ -44,15 +44,27 @@ void IntersectionManager::renderCars(SDL_Renderer* renderer) {
 }
 
 void IntersectionManager::carThread(Car* car) {
+    SDL_Rect intersectionRect {
+        regionLeft,
+        regionTop,
+        regionRight - regionLeft,
+        regionBottom - regionTop
+    };
+
     while (!stopFlag.load()) {
-        bool needLock = false;
-        if ((car->getVx() > 0 && car->getX() + car->getWidth() + car->getVx() >= regionLeft) ||
-            (car->getVx() < 0 && car->getX() + car->getVx() <= regionRight)) {
-            needLock = true;
-        }
-        if ((car->getVy() > 0 && car->getY() + car->getHeight() + car->getVy() >= regionTop) ||
-            (car->getVy() < 0 && car->getY() + car->getVy() <= regionBottom)) {
-            needLock = true;
+        bool needLock;
+        {
+            float nextX = car->getX() + car->getVx();
+            float nextY = car->getY() + car->getVy();
+
+            SDL_Rect nextCarRect {
+                static_cast<int>(nextX),
+                static_cast<int>(nextY),
+                car->getWidth(),
+                car->getHeight()
+            };
+
+            needLock = (SDL_HasIntersection(&nextCarRect, &intersectionRect) == SDL_TRUE);
         }
 
         if (!car->isHoldingLock() && needLock) {
@@ -66,12 +78,15 @@ void IntersectionManager::carThread(Car* car) {
         }
 
         if (car->isHoldingLock()) {
-            bool leftSidePassed  = (car->getVx() < 0 && car->getX() + car->getWidth() < regionLeft);
-            bool rightSidePassed = (car->getVx() > 0 && car->getX() > regionRight);
-            bool topSidePassed   = (car->getVy() < 0 && car->getY() + car->getHeight() < regionTop);
-            bool bottomSidePassed= (car->getVy() > 0 && car->getY() > regionBottom);
+            SDL_Rect currentCarRect {
+                static_cast<int>(car->getX()),
+                static_cast<int>(car->getY()),
+                car->getWidth(),
+                car->getHeight()
+            };
 
-            if (leftSidePassed || rightSidePassed || topSidePassed || bottomSidePassed) {
+            bool inIntersection = (SDL_HasIntersection(&currentCarRect, &intersectionRect) == SDL_TRUE);
+            if (!inIntersection) {
                 car->setHoldingLock(false);
                 intersectionMutex.unlock();
             }
@@ -85,3 +100,4 @@ void IntersectionManager::carThread(Car* car) {
         intersectionMutex.unlock();
     }
 }
+
