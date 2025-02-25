@@ -1,0 +1,3 @@
+/Users/dmitrii/CrossIntersection/build/CMakeFiles/IntersectionSimulation.dir
+/Users/dmitrii/CrossIntersection/build/CMakeFiles/edit_cache.dir
+/Users/dmitrii/CrossIntersection/build/CMakeFiles/rebuild_cache.dir
