@@ -1,3 +1,6 @@
+
+![Alt Text](https://github.com/dimasximik/CrossIntersection/blob/main/cross.gif)
+
 # Intersection Simulation
 
 A demonstrative project simulating a simple multi-lane, left-hand traffic intersection using modern C++, multi-threading, and SDL2 for rendering (defaulting to OpenGL under the hood). It showcases concurrency control, resource management for a shared intersection, and a straightforward 2D visualization of moving cars.
